@@ -24,21 +24,23 @@ function handleDisconnect() {
     handleDisconnect();
   });
 
-  app.get("/country/:idCountry", (req, res) => {
-    let sql =
-      "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
-      "FROM hotel " +
-      "JOIN city ON hotel.idCity = city.idCity " +
-      "JOIN country ON city.idCountry = country.idCountry " +
-      "WHERE hotel.idCity IN (SELECT city.idCity FROM city WHERE idCountry=" +
-      req.params.idCountry +
-      ")";
-    let query = db.query(sql, (err, result) => {
-      if (err) {
-        throw err;
-      }
-      res.send(result);
-    });
+  app.get("/country/", (req, res) => {
+    console.log(req);
+    res.send(req.query);
+    // let sql =
+    //   "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
+    //   "FROM hotel " +
+    //   "JOIN city ON hotel.idCity = city.idCity " +
+    //   "JOIN country ON city.idCountry = country.idCountry " +
+    //   "WHERE hotel.idCity IN (SELECT city.idCity FROM city WHERE idCountry=" +
+    //   req.params.idCountry +
+    //   ")";
+    // let query = db.query(sql, (err, result) => {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   res.send(result);
+    // });
   });
 
   app.get("/city/:idCity", (req, res) => {
