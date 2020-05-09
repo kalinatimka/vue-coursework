@@ -13,11 +13,21 @@
       </li>
     </ul>
     <ul class="authorization">
-      <li>Log In</li>
-      <li>Sign Up</li>
+      <li>
+        <router-link to="/">Log In</router-link>
+      </li>
+      <li>
+        <router-link to="/">Sign Up</router-link>
+      </li>
     </ul>
   </nav>
 </template>
+
+<script>
+export default {
+  name: 'the-navigation',
+}
+</script>
 
 <style scoped>
 h1 {
