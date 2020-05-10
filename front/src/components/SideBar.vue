@@ -5,15 +5,15 @@
       <h4>Country</h4>
       <ul>
         <li>
-          <input type="checkbox" name="country" id="switherland" value="1" v-model="country">
+          <input type="checkbox" name="country" id="switherland" value="1" v-model="countries">
           <label for="switherland">Швейцария</label>
         </li>
         <li>
-          <input type="checkbox" name="country" id="germany" value="2" v-model="country">
+          <input type="checkbox" name="country" id="germany" value="2" v-model="countries">
           <label for="germany">Германия</label>
         </li>
       </ul>
-      {{country}}
+      {{countries}}
     </article>
   </aside>
 </template>
@@ -23,12 +23,30 @@ export default {
   name: 'sidebar',
   data() {
     return {
-      country: [],
+      countries: [],
+      isInitLoad: true,
+    }
+  },
+  created() {
+    if (this.$route.query['country']) { // если в строке поиска есть фильтры, то отмечаем все чекбоксы этих фильтров
+      this.countries.push(...this.$route.query['country']);
+    } else {
+      this.isInitLoad = false;
     }
   },
   watch: {
-    country: function() {
-      console.log(this.country);
+    countries: function() {
+      if (this.isInitLoad) {
+        this.isInitLoad = false;
+        return;
+      }
+      this.$router.push({
+        name: 'tours',
+        query: {
+          country: this.countries,
+        },
+      });
+      this.$store.dispatch('getTours', this.$route.fullPath);
     }
   }
 }

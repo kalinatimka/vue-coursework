@@ -16,8 +16,8 @@ export default new Vuex.Store({
   },
 
   actions: {
-    getTours({commit}) {
-      axios.get('http://localhost:3000/tours').then(res => {
+    getTours({commit}, fullPath) {
+      axios.get('http://localhost:3000' + fullPath).then(res => {
         commit('setTours', res.data);
       });
     }

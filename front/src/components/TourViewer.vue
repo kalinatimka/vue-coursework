@@ -29,8 +29,8 @@ export default {
   },
 
   created: function() {
-    console.log(this.$route.query);
-    this.$store.dispatch('getTours');
+    console.log(this.$route);
+    this.$store.dispatch('getTours', this.$route.fullPath);
   }
 }
 </script>

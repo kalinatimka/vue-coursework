@@ -2,6 +2,31 @@ const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
 
+const constants = {
+  country: 'country.idCountry',
+}
+
+function addFilters(filters) {
+  let sql = ' WHERE ';
+  console.log(filters);
+  Object.keys(filters).forEach((key, index) => {
+    if (index != 0) {
+      sql += ' OR '; // скорее всего здесь будет AND
+    }
+    if (Array.isArray(filters[key])) {
+      filters[key].forEach((filterId, index) => {
+        if (index != 0) {
+          sql += ' OR ';
+        }
+        sql += constants[key] + '=' + filterId;
+      })
+    } else {
+      sql += constants[key] + '=' + filters[key];
+    }
+  });
+  return sql;
+}
+
 function handleDisconnect() {
   const app = express();
   app.use(cors());
@@ -34,6 +59,7 @@ function handleDisconnect() {
     'JOIN hotel ON room.idHotel = hotel.idHotel ' +
     'JOIN city ON hotel.idCity = city.idCity ' + 
     'JOIN country ON city.idCountry = country.idCountry';
+    sql += Object.keys(req.query).length ? addFilters(req.query) : "";
     let query = db.query(sql, (err, result) => {
       if (err) {
         throw err;
