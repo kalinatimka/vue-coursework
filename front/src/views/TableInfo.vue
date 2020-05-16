@@ -16,8 +16,8 @@
           </td>
           <td>
             <div v-if="!row.edit">
-              <button @click="editFields(row, ind)">Изменить</button>
-              <button @click="deleteRow(row, ind)">Удалить</button>
+              <button :disabled="disableButton" @click="editFields(row, ind)">Изменить</button>
+              <button :disabled="disableButton" @click="deleteRow(row, ind)">Удалить</button>
             </div>
             <div v-else>
               <button @click="updateRow()">Сохранить</button>
@@ -39,7 +39,7 @@ import { mapState } from 'vuex';
 export default {
   data() {
     return {
-      // edit: false,
+      isEditMode: false,
       inputData: {},
     }
   },
@@ -48,6 +48,9 @@ export default {
     ...mapState({
       tableData: state => state.tableData,
     }),
+    disableButton() {
+      return this.isEditMode;
+    }
   },
 
   props: {
@@ -70,10 +73,12 @@ export default {
     },
     editFields(row, ind) {
       this.inputData = Object.assign({}, row.data);
+      this.isEditMode = true;
       this.tableData[ind].edit = true;
     },
     closeEdit(ind) {
       this.inputData = {};
+      this.isEditMode = false;
       this.tableData[ind].edit = false;
     }
   },
