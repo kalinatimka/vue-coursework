@@ -114,57 +114,67 @@ function handleDisconnect() {
     })
   });
 
-  app.get("/country/:idCountry", (req, res) => {
-    // console.log(req);
-    // res.send(req.query);
-    let sql =
-      "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
-      "FROM hotel " +
-      "JOIN city ON hotel.idCity = city.idCity " +
-      "JOIN country ON city.idCountry = country.idCountry " +
-      "WHERE hotel.idCity IN (SELECT city.idCity FROM city WHERE idCountry=" +
-      req.params.idCountry +
-      ")";
-    let query = db.query(sql, (err, result) => {
+  app.delete('/delete', (req, res) => {
+    let sql = `DELETE FROM ${req.body.tableName} WHERE ${req.body.colName} = ${req.body.indexForMySql}`;
+    db.query(sql, (err, result) => {
       if (err) {
         throw err;
       }
       res.send(result);
-    });
-  });
+    })
+  })
 
-  app.get("/facilities", (req, res) => {
-    let sql = 'SELECT tourticket.idTourTicket AS id, hotel.name AS hotel, hotel.description AS hotelDescription, city.name AS city, country.name AS country ' +
-    'FROM tourticket ' + 
-    'JOIN booktable ON tourticket.idBookTable = booktable.idBookTable ' +
-    'JOIN room ON booktable.idRoom = room.idRoom ' + 
-    'JOIN hotel ON room.idHotel = hotel.idHotel ' +
-    'JOIN city ON hotel.idCity = city.idCity ' + 
-    'JOIN country ON city.idCountry = country.idCountry ' + 
-    'WHERE room.idRoom IN (SELECT room_idRoom FROM room_has_facilities WHERE facilities_idFacilities = 1 OR facilities_idFacilities = 2)';
-    let query = db.query(sql, (err, result) => {
-      if (err) {
-        throw err;
-      }
-      res.send(result);
-    });
-  });
+  // app.get("/country/:idCountry", (req, res) => {
+  //   // console.log(req);
+  //   // res.send(req.query);
+  //   let sql =
+  //     "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
+  //     "FROM hotel " +
+  //     "JOIN city ON hotel.idCity = city.idCity " +
+  //     "JOIN country ON city.idCountry = country.idCountry " +
+  //     "WHERE hotel.idCity IN (SELECT city.idCity FROM city WHERE idCountry=" +
+  //     req.params.idCountry +
+  //     ")";
+  //   let query = db.query(sql, (err, result) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //     res.send(result);
+  //   });
+  // });
 
-  app.get("/city/:idCity", (req, res) => {
-    let sql =
-      "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
-      "FROM hotel " +
-      "JOIN city ON hotel.idCity = city.idCity " +
-      "JOIN country ON city.idCountry = country.idCountry " +
-      "WHERE hotel.idCity = " +
-      req.params.idCity;
-    let query = db.query(sql, (err, result) => {
-      if (err) {
-        throw err;
-      }
-      res.send(result);
-    });
-  });
+  // app.get("/facilities", (req, res) => {
+  //   let sql = 'SELECT tourticket.idTourTicket AS id, hotel.name AS hotel, hotel.description AS hotelDescription, city.name AS city, country.name AS country ' +
+  //   'FROM tourticket ' + 
+  //   'JOIN booktable ON tourticket.idBookTable = booktable.idBookTable ' +
+  //   'JOIN room ON booktable.idRoom = room.idRoom ' + 
+  //   'JOIN hotel ON room.idHotel = hotel.idHotel ' +
+  //   'JOIN city ON hotel.idCity = city.idCity ' + 
+  //   'JOIN country ON city.idCountry = country.idCountry ' + 
+  //   'WHERE room.idRoom IN (SELECT room_idRoom FROM room_has_facilities WHERE facilities_idFacilities = 1 OR facilities_idFacilities = 2)';
+  //   let query = db.query(sql, (err, result) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //     res.send(result);
+  //   });
+  // });
+
+  // app.get("/city/:idCity", (req, res) => {
+  //   let sql =
+  //     "SELECT country.name AS countryName, city.name AS cityName, hotel.name AS hotelName, hotel.description AS hotelDescription " +
+  //     "FROM hotel " +
+  //     "JOIN city ON hotel.idCity = city.idCity " +
+  //     "JOIN country ON city.idCountry = country.idCountry " +
+  //     "WHERE hotel.idCity = " +
+  //     req.params.idCity;
+  //   let query = db.query(sql, (err, result) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //     res.send(result);
+  //   });
+  // });
 
   let server = app.listen('3000', () => {
     console.log('Ya est sila');

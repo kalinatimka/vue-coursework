@@ -65,11 +65,15 @@ export default {
   },
 
   methods: {
-    deleteRow(rowData, index) {
-      // const indexForMySql = rowData[Object.keys(rowData)[0]]; // for MySql
-      // console.log('MySql index', indexForMySql);
-      this.tableData.splice(index, 1);
-      this.$store.commit('setTableData', this.tableData);
+    deleteRow(row, index) {
+      const colName = Object.keys(row.data)[0];
+      const indexForMySql = row.data[colName]; // for MySql
+      this.$store.dispatch('deleteRow', {
+        tableName: this.tableName,
+        indexForMySql,
+        colName,
+        index,
+      });
     },
     editFields(row, ind) {
       this.inputData = Object.assign({}, row.data);

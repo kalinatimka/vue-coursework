@@ -28,6 +28,9 @@ export default new Vuex.Store({
     },
     setError(state, error) {
       state.error = error;
+    },
+    deleteRowFromTableData(state, index) {
+      state.tableData.splice(index, 1);
     }
   },
 
@@ -63,6 +66,21 @@ export default new Vuex.Store({
         commit('setQueryData', res.data);
       }).catch((err) => {
         commit('setError', err.response.data.message);
+      });
+    },
+
+    deleteRow({commit}, {
+      tableName,
+      indexForMySql,
+      colName,
+      index
+    }) {
+      axios.delete('http://localhost:3000/delete', { data: {
+        tableName, 
+        indexForMySql,
+        colName,
+      }}).then(() => {
+        commit('deleteRowFromTableData', index);
       });
     }
   },
