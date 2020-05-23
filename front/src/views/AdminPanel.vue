@@ -40,6 +40,7 @@ export default {
 }
 
 .admin-tables-list {
+  /* background-color: #42b983; */
   width: 300px;
   border-right: 1px solid #000;
 }

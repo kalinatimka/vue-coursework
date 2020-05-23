@@ -31,6 +31,13 @@ export default new Vuex.Store({
     },
     deleteRowFromTableData(state, index) {
       state.tableData.splice(index, 1);
+    },
+    updateTableDataRow(state, obj) {
+      const newData = obj.newData;
+      const index = obj.index;
+      Object.keys(newData).forEach((key) => {
+        state.tableData[index].data[key] = newData[key];
+      });
     }
   },
 
@@ -69,12 +76,7 @@ export default new Vuex.Store({
       });
     },
 
-    deleteRow({commit}, {
-      tableName,
-      indexForMySql,
-      colName,
-      index
-    }) {
+    deleteRow({commit}, {tableName, indexForMySql, colName, index}) {
       axios.delete('http://localhost:3000/delete', { data: {
         tableName, 
         indexForMySql,
@@ -82,6 +84,17 @@ export default new Vuex.Store({
       }}).then(() => {
         commit('deleteRowFromTableData', index);
       });
-    }
+    },
+
+    updateRow({commit}, {tableName, indexForMySql, newData, index, colName}) {
+      return axios.put('http://localhost:3000/update', {
+        tableName,
+        indexForMySql,
+        newData,
+        colName,
+      }).then(() => {
+        commit('updateTableDataRow', {index, newData});
+      });
+    },
   },
 });

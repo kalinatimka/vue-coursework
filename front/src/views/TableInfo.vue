@@ -11,17 +11,17 @@
       <tbody>
         <tr v-for="(row, ind) in tableData" :key="ind">
           <td v-for="(colKey, i) in Object.keys(row.data)" :key="i">
-            <input v-if="row.edit" v-model="inputData[colKey]">
+            <input v-if="row.edit && !(i == 0)" v-model="inputData[colKey]">
             <label v-else>{{row.data[colKey]}}</label>
           </td>
           <td>
             <div v-if="!row.edit">
-              <button :disabled="disableButton" @click="editFields(row, ind)">Изменить</button>
+              <button :disabled="disableButton" @click="editFields(row)">Изменить</button>
               <button :disabled="disableButton" @click="deleteRow(row, ind)">Удалить</button>
             </div>
             <div v-else>
-              <button @click="updateRow()">Сохранить</button>
-              <button @click="closeEdit(ind)">Отменить</button>
+              <button @click="updateRow(row, ind)">Сохранить</button>
+              <button @click="closeEdit(row)">Отменить</button>
             </div>
           </td>
         </tr>
@@ -75,16 +75,47 @@ export default {
         index,
       });
     },
-    editFields(row, ind) {
-      this.inputData = Object.assign({}, row.data);
+    editFields(row) {
+      this.inputData = Object.keys(row.data).reduce((acc, item, index) => {
+        if (index == 0) {
+          return acc;
+        }
+        acc[item] = row.data[item];
+        return acc;
+      }, {});
+      // this.inputData = Object.assign({}, row.data);
       this.isEditMode = true;
-      this.tableData[ind].edit = true;
+      row.edit = true;
     },
-    closeEdit(ind) {
+    closeEdit(row) {
       this.inputData = {};
       this.isEditMode = false;
-      this.tableData[ind].edit = false;
-    }
+      row.edit = false;
+    },
+    updateRow(row, index) {
+      const colName = Object.keys(row.data)[0];
+      const indexForMySql = row.data[colName];
+      const isEqual = Object.keys(this.inputData).every((key) => {
+        return this.inputData[key] === row.data[key];
+      });
+      if (!isEqual) {
+        this.$store.dispatch('updateRow', {
+          tableName: this.tableName,
+          indexForMySql,
+          newData: this.inputData,
+          index,
+          colName,
+        }).then(() => {
+          this.inputData = {};
+          this.isEditMode = false;
+          row.edit = false;
+        });
+      } else {
+        this.inputData = {};
+        this.isEditMode = false;
+        row.edit = false;
+      }
+    },
   },
 }
 </script>
@@ -104,18 +135,19 @@ table {
 }
 
 th {
-  background-color: #fff;
   padding: 5px;
+  color: #ffffff;
+  background-color: #42b983;
 }
 
 table, th {
-  border: 1px solid black;
+  border: 1px solid #000000;
 }
 
 td {
   padding: 5px;
-  background-color: #fff;
-  border: 1px solid black;
+  background-color: #ffffff;
+  border: 1px solid #000000;
 }
 
 input {

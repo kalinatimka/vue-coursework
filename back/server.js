@@ -10,7 +10,7 @@ const constants = {
   parking: 'facilities.parking',
 }
 
-function addFilters(filters) {
+function addFilters(filters) { //generate SELECT query
   let sql = ' WHERE ';
   console.log(filters);
   Object.keys(filters).forEach((key, index) => {
@@ -32,6 +32,18 @@ function addFilters(filters) {
   });
   sql += ' ';
   console.log(sql);
+  return sql;
+}
+
+function generateUpdateQuery(table, newData, conditionName, conditionValue) {
+  let sql = `UPDATE ${table} SET `;
+  Object.keys(newData).forEach((key, index) => {
+    if (index != 0) {
+      sql += ', ';
+    }
+    sql += `${key}='${newData[key]}'`;
+  });
+  sql += ` WHERE ${conditionName}=${conditionValue}`;
   return sql;
 }
 
@@ -122,7 +134,18 @@ function handleDisconnect() {
       }
       res.send(result);
     })
-  })
+  });
+
+  app.put('/update', (req, res) => {
+    const data = req.body;
+    let sql = generateUpdateQuery(data.tableName, data.newData, data.colName, data.indexForMySql);
+    db.query(sql, (err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.send(result);
+    });
+  });
 
   // app.get("/country/:idCountry", (req, res) => {
   //   // console.log(req);
