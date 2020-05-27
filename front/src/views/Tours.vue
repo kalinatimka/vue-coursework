@@ -25,6 +25,7 @@ export default {
 <style scoped>
 h2 {
   margin: 0;
+  margin-bottom: 20px;
   text-align: center;
 }
 

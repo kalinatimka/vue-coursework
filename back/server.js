@@ -73,9 +73,9 @@ function handleDisconnect() {
   });
 
   app.get('/tours', (req, res) => {
-    let sql = 'SELECT tourticket.idTourTicket AS id, hotel.name AS hotel, hotel.description AS hotelDescription, '+
+    let sql = 'SELECT tourticket.idTourTicket AS id, hotel.name AS hotel, room.description AS hotelDescription, '+
     'city.name AS city, country.name AS country, facilities.wifi AS wifi, facilities.parking AS parking, ' + 
-    'facilities.conditioner AS conditioner, AVG(reviews.rating) AS rating ' +
+    'facilities.conditioner AS conditioner, AVG(reviews.rating) AS rating, mainImage ' +
     'FROM tourticket ' + 
     'JOIN booktable ON tourticket.idBookTable = booktable.idBookTable ' +
     'JOIN room ON booktable.idRoom = room.idRoom ' + 
@@ -94,6 +94,25 @@ function handleDisconnect() {
     });
   });
 
+  app.get('/tour-info/:tourId', (req, res) => {
+    let sql = 'SELECT room.totalPrice, room.mainImage, room.description, roomType.type, roomCapacity.adults, roomCapacity.childs, hotel.name, ' +
+    'hotel.description AS hotelDescription, facilities.wifi AS wifi, facilities.parking AS parking, facilities.conditioner AS conditioner ' +
+    'FROM room ' + 
+    'JOIN hotel ON room.idHotel = hotel.idHotel ' + 
+    'JOIN roomType ON room.idRoomType = roomType.idRoomType ' +
+    'JOIN roomCapacity ON room.idRoomCapacity = roomCapacity.idRoomCapacity ' +
+    'JOIN facilities ON room.idFacilities = facilities.idFacilities ' + 
+    'WHERE room.idRoom = ' + req.params.tourId;
+    let query = db.query(sql, (err, result) => {
+      if (err) {
+        throw err;
+      }
+      res.send(result);
+    });
+  });
+
+
+  // ----- ADMIN PANEL QUERIES -----
   app.get('/tables', (req, res) => {
     let sql = "SELECT TABLE_NAME AS name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='leavecountry'";
     let query = db.query(sql, (err, result) => {

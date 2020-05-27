@@ -3,7 +3,7 @@
     <!-- Tags -->
     <ul>
       <li v-for="tour in tours" :key="tour.id">
-        {{tour}}
+        <!-- {{tour}} -->
         <tour-card :tour="tour"/>
       </li>
     </ul>

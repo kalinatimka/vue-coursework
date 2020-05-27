@@ -11,6 +11,7 @@ export default new Vuex.Store({
     tables: [],
     tableData: [],
     queryData: [],
+    tourInfo: [],
   },
 
   mutations: {
@@ -38,6 +39,9 @@ export default new Vuex.Store({
       Object.keys(newData).forEach((key) => {
         state.tableData[index].data[key] = newData[key];
       });
+    },
+    setTourInfo(state, tourInfo) {
+      state.tourInfo = tourInfo;
     }
   },
 
@@ -50,7 +54,6 @@ export default new Vuex.Store({
 
     getTables({commit}) {
       axios.get('http://localhost:3000/tables').then(res => {
-
         commit('setTables', res.data);
       });
     },
@@ -94,6 +97,12 @@ export default new Vuex.Store({
         colName,
       }).then(() => {
         commit('updateTableDataRow', {index, newData});
+      });
+    },
+
+    getTourInfo({commit}, tourId) {
+      return axios.get('http://localhost:3000/tour-info/' + tourId).then((res) => {
+        commit('setTourInfo', res.data);
       });
     },
   },
